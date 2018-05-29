@@ -38,6 +38,7 @@ int main(int argc, char *argv[])
   }
 
   selectsort(factor);
+  printf("%s\n",factor);
 
   /*一行よみこむ、辞書は１６文字,改行含め１７*/
   while (fgets(dic, 16, fp) != '\0')
@@ -52,7 +53,7 @@ int main(int argc, char *argv[])
       tmp_dic[i]=dic[i];
     }
   printf("");
-    // 結果に使う用の文字列
+    // 結果に使う用の文字列s
     char result[strlen(tp)]; //最初に宣言したところ、余計な文字列が出てきてしまった
     for (i = 0; i < strlen(tp); i++)
     {
@@ -63,7 +64,7 @@ int main(int argc, char *argv[])
 
     if (checkwords(tmp_dic, factor) == true)
     {
-      printf("%s \n", dic);
+      printf("%s  ", dic);
     };
   }
   if (EOF == fclose(fp))
