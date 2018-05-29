@@ -8,21 +8,17 @@ char selectsort(char *);
 bool checkwords(char *, char *);
 int scoreword(char *);
 
-// 大文字対応
-// １行目は並び替えがされない（まあ１行目は大丈夫だが）
-//点数高い順に並べる関数
-//１文字減る時
-//
 
 int main(int argc, char *argv[])
 {
   FILE *fp;
-  char *filename = "test.txt";
+  char *filename = "dictionary.txt";
   char dic[BUF];
   char factor[BUF];
   char *tp;
-  int i = 0;
-  int j = 0;
+  int i = 0,j = 0;
+  int score,prescore=0;
+  char recommend[20];
 
   if (argc < 2)
   {
@@ -71,9 +67,18 @@ int main(int argc, char *argv[])
     if (checkwords(dic, factor) == true)
     {
       printf("%s ", result);
-      scoreword(dic);
+      prescore = scoreword(dic);
+      if(prescore>score){
+        score=prescore;
+        for(i=0;i<strlen(result);i++){
+        recommend[i]=result[i];
+        }
+        recommend[i] = '\0';
+      }
     };
   }
+  printf("RECOMMEND WORD : %s\n",recommend);
+
   if (EOF == fclose(fp))
   {
     perror(filename);
@@ -150,15 +155,16 @@ bool checkwords(char *dicWord, char *checkWord)
 int scoreword(char *word)
 {
   int score = 0;
+  int point=0;
   int i = 0;
 
   for (i = 0; i < strlen(word); i++)
   {
-    if (word[i] == 'z')
+    if ((word[i] == 'j')||(word[i] == 'k')||(word[i] == 'q')||(word[i] == 'x')||(word[i] == 'z'))
     {
       score += 3;
     }
-    else if (word[i] == 'y')
+    else if ((word[i] == 'c')||(word[i] == 'f')||(word[i] == 'h')||(word[i] == 'l')||(word[i] == 'm')||(word[i] == 'p')||(word[i] == 'v')||(word[i] == 'w')||(word[i] == 'y'))
     {
       score += 2;
     }
@@ -167,6 +173,6 @@ int scoreword(char *word)
       score += 1;
     }
   }
-  printf("score: %d\n", score);
-  return score;
+  point=score*score;
+  return point;
 }
