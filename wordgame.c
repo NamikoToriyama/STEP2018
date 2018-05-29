@@ -3,18 +3,25 @@
 #include <string.h>
 #include <stdbool.h>
 
+#define BUF 20
 char selectsort(char *);
 bool checkwords(char *, char *);
+int scoreword(char *);
+
+// 大文字対応
+// １行目は並び替えがされない（まあ１行目は大丈夫だが）
+//点数高い順に並べる関数
+//１文字減る時
+//
 
 int main(int argc, char *argv[])
 {
   FILE *fp;
-  char *filename = "dictionary.txt";
-  char dic[16];
-  char tmp_dic[16];
-  char factor[16];
-  char *tp, *tp_re;
-  int i;
+  char *filename = "test.txt";
+  char dic[BUF];
+  char factor[BUF];
+  char *tp;
+  int i = 0;
   int j = 0;
 
   if (argc < 2)
@@ -31,40 +38,40 @@ int main(int argc, char *argv[])
   }
 
   /*入力の文字を配列に代入*/
-  for (i = 1; i < argc; i++)
+  for (int i = 1; i < argc; i++)
   {
     factor[j] = *argv[i];
     j++;
   }
-
+  factor[j] = '\0';
   selectsort(factor);
-  printf("%s\n",factor);
+  printf("%s\n", factor);
+  printf("\n<result>\n");
 
-  /*一行よみこむ、辞書は１６文字,改行含め１７*/
-  while (fgets(dic, 16, fp) != '\0')
+  /*一行よみこむ、辞書は16文字*/
+  while (fgets(dic, BUF, fp) != '\0')
   {
-    
     //fgetsの改行対策
     if ((tp = strtok(dic, "\n")) == NULL)
-    { //最後実行すると１文字足りない
-      tp = dic;
+    {
+      printf("token error\n");
     }
-    for(i=0;i<16;i++){
-      tmp_dic[i]=dic[i];
-    }
-  printf("");
-    // 結果に使う用の文字列s
-    char result[strlen(tp)]; //最初に宣言したところ、余計な文字列が出てきてしまった
+    printf(""); //配列の後に必要
+
+    // 結果に使う用の文字列
+    char result[strlen(tp)];
     for (i = 0; i < strlen(tp); i++)
     {
-      result[i] = tmp_dic[i];
+      result[i] = dic[i];
     }
+    result[i] = '\0';
     //辞書の文字を順番に並べる
-    selectsort(tmp_dic);
+    selectsort(dic);
 
-    if (checkwords(tmp_dic, factor) == true)
+    if (checkwords(dic, factor) == true)
     {
-      printf("%s  ", dic);
+      printf("%s ", result);
+      scoreword(dic);
     };
   }
   if (EOF == fclose(fp))
@@ -83,7 +90,7 @@ char selectsort(char *str)
   char tmp;
   int i, j;
 
-  /*とてもダサい,ここで１６文字のnull文字が消える*/
+  /*ここで１６文字のnull文字が消える*/
   while (cen[i] != '\0')
   {
     j = i + 1;
@@ -99,6 +106,7 @@ char selectsort(char *str)
     }
     i++;
   }
+  cen[i] = '\0';
   return *cen;
 }
 /*入力した文字列と辞書との比較*/
@@ -108,8 +116,6 @@ bool checkwords(char *dicWord, char *checkWord)
   char *d = dicWord;
   char *c = checkWord;
   int i = 0, j = 0;
-
-  //あとで消す,辞書の文字数,strlenよりできればmblen、mbstowcsの方が良い
 
   while ((i < strlen(d) - 1) || (j < strlen(c)))
   {
@@ -135,9 +141,32 @@ bool checkwords(char *dicWord, char *checkWord)
       }
       else
       {
-        printf("error\n");
+        printf("check error\n");
       }
     }
   }
   return decision;
+}
+int scoreword(char *word)
+{
+  int score = 0;
+  int i = 0;
+
+  for (i = 0; i < strlen(word); i++)
+  {
+    if (word[i] == 'z')
+    {
+      score += 3;
+    }
+    else if (word[i] == 'y')
+    {
+      score += 2;
+    }
+    else
+    {
+      score += 1;
+    }
+  }
+  printf("score: %d\n", score);
+  return score;
 }
