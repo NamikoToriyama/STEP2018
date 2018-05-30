@@ -8,6 +8,8 @@ char selectsort(char *);
 bool checkwords(char *, char *);
 int scoreword(char *);
 
+//文字列が後ろの方か複数回だとだめなバグ
+//できればもうちょっと楽に入力したい
 
 int main(int argc, char *argv[])
 {
@@ -16,8 +18,8 @@ int main(int argc, char *argv[])
   char dic[BUF];
   char factor[BUF];
   char *tp;
-  int i = 0,j = 0;
-  int score,prescore=0;
+  int i = 0, j = 0;
+  int score, prescore = 0;
   char recommend[20];
 
   if (argc < 2)
@@ -58,6 +60,11 @@ int main(int argc, char *argv[])
     char result[strlen(tp)];
     for (i = 0; i < strlen(tp); i++)
     {
+      //頭文字が大文字のものを小文字にする
+      if (dic[i] >= 65 && dic[i] <= 90)
+      {
+        dic[i] = dic[i] + 32;
+      }
       result[i] = dic[i];
     }
     result[i] = '\0';
@@ -68,16 +75,18 @@ int main(int argc, char *argv[])
     {
       printf("%s ", result);
       prescore = scoreword(dic);
-      if(prescore>score){
-        score=prescore;
-        for(i=0;i<strlen(result);i++){
-        recommend[i]=result[i];
+      if (prescore > score)
+      {
+        score = prescore;
+        for (i = 0; i < strlen(result); i++)
+        {
+          recommend[i] = result[i];
         }
         recommend[i] = '\0';
       }
     };
   }
-  printf("RECOMMEND WORD : %s\n",recommend);
+  printf("\nRECOMMEND WORD : %s\n", recommend);
 
   if (EOF == fclose(fp))
   {
@@ -155,16 +164,16 @@ bool checkwords(char *dicWord, char *checkWord)
 int scoreword(char *word)
 {
   int score = 0;
-  int point=0;
+  int point = 0;
   int i = 0;
 
   for (i = 0; i < strlen(word); i++)
   {
-    if ((word[i] == 'j')||(word[i] == 'k')||(word[i] == 'q')||(word[i] == 'x')||(word[i] == 'z'))
+    if ((word[i] == 'j') || (word[i] == 'k') || (word[i] == 'q') || (word[i] == 'x') || (word[i] == 'z'))
     {
       score += 3;
     }
-    else if ((word[i] == 'c')||(word[i] == 'f')||(word[i] == 'h')||(word[i] == 'l')||(word[i] == 'm')||(word[i] == 'p')||(word[i] == 'v')||(word[i] == 'w')||(word[i] == 'y'))
+    else if ((word[i] == 'c') || (word[i] == 'f') || (word[i] == 'h') || (word[i] == 'l') || (word[i] == 'm') || (word[i] == 'p') || (word[i] == 'v') || (word[i] == 'w') || (word[i] == 'y'))
     {
       score += 2;
     }
@@ -173,6 +182,6 @@ int scoreword(char *word)
       score += 1;
     }
   }
-  point=score*score;
+  point = score * score;
   return point;
 }
