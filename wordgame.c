@@ -8,8 +8,6 @@ char selectsort(char *);
 bool checkwords(char *, char *);
 int scoreword(char *);
 
-//文字列が後ろの方か複数回だとだめなバグ
-//できればもうちょっと楽に入力したい
 
 int main(int argc, char *argv[])
 {
@@ -74,6 +72,7 @@ int main(int argc, char *argv[])
     if (checkwords(dic, factor) == true)
     {
       printf("%s ", result);
+      //点数から一番点数の高いものを表示する
       prescore = scoreword(dic);
       if (prescore > score)
       {
@@ -104,7 +103,6 @@ char selectsort(char *str)
   char tmp;
   int i, j;
 
-  /*ここで１６文字のnull文字が消える*/
   while (cen[i] != '\0')
   {
     j = i + 1;
@@ -120,36 +118,40 @@ char selectsort(char *str)
     }
     i++;
   }
-  cen[i] = '\0';
   return *cen;
 }
+
 /*入力した文字列と辞書との比較*/
 bool checkwords(char *dicWord, char *checkWord)
 {
-  bool decision = true;
+  bool decision = false;
   char *d = dicWord;
   char *c = checkWord;
   int i = 0, j = 0;
-
   while ((i < strlen(d) - 1) || (j < strlen(c)))
   {
-    if ((d[i] == '\0') && (c[j] != '\0'))
+    if (d[i] == '\0') //文字が終わった時
     {
+      decision = true;
       break;
     }
-    else if (d[i] == c[j])
+    else if (d[i] == c[j]) //文字が一致した時
     {
       i++;
       j++;
+      if (strlen(d) == i)
+      { //最後の文字が一致した時
+        decision = true;
+        break;
+      }
     }
     else
     {
-      if (j == strlen(c) - 1)
+      if (j == strlen(c) - 1) //単語が終わった時
       {
-        decision = false;
         break;
       }
-      if (d[i] != c[j])
+      if (d[i] != c[j]) //単語が一致しないとき
       {
         j++;
       }
@@ -161,6 +163,8 @@ bool checkwords(char *dicWord, char *checkWord)
   }
   return decision;
 }
+
+/*点数の計算をする関数*/
 int scoreword(char *word)
 {
   int score = 0;
