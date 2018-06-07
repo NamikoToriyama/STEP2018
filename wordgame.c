@@ -8,7 +8,6 @@ char selectsort(char *);
 bool checkwords(char *, char *);
 int scoreword(char *);
 
-
 int main(int argc, char *argv[])
 {
   FILE *fp;
@@ -17,7 +16,7 @@ int main(int argc, char *argv[])
   char factor[BUF];
   char *tp;
   int i = 0, j = 0;
-  int score, prescore = 0;
+  int score, highscore = 0;
   char recommend[20];
 
   if (argc < 2)
@@ -56,7 +55,7 @@ int main(int argc, char *argv[])
 
     // 結果に使う用の文字列
     char result[strlen(tp)];
-    for (i = 0; i < strlen(tp); i++)
+    for (i = 0; i < strlen(tp) + 1; i++)
     {
       //頭文字が大文字のものを小文字にする
       if (dic[i] >= 65 && dic[i] <= 90)
@@ -65,23 +64,22 @@ int main(int argc, char *argv[])
       }
       result[i] = dic[i];
     }
-    result[i] = '\0';
     //辞書の文字を順番に並べる
     selectsort(dic);
 
+    //結果の出力
     if (checkwords(dic, factor) == true)
     {
       printf("%s ", result);
-      //点数から一番点数の高いものを表示する
-      prescore = scoreword(dic);
-      if (prescore > score)
+
+      highscore = scoreword(dic); //点数から一番点数の高いものをだす
+      if (highscore > score)
       {
-        score = prescore;
-        for (i = 0; i < strlen(result); i++)
+        score = highscore;
+        for (i = 0; i < strlen(result) + 1; i++)
         {
           recommend[i] = result[i];
         }
-        recommend[i] = '\0';
       }
     };
   }
@@ -139,8 +137,8 @@ bool checkwords(char *dicWord, char *checkWord)
     {
       i++;
       j++;
-      if (strlen(d) == i)
-      { //最後の文字が一致した時
+      if (strlen(d) == i) //最後の文字が一致した時
+      {
         decision = true;
         break;
       }
