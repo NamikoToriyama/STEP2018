@@ -32,13 +32,13 @@ int main(int argc, char** argv)
   }
 
   double begin = get_time();
-for(int a=0;a<5;a++){
+for(int l=0;l<5;l++){//5回繰り返して時間をとる
   /**************************************/
   int k;
   for (i = 0; i < n; i++) {
     for (j = 0; j < n; j++) {
       for(k=0;k<n;k++){    
-      c[i * n + j] += a[i * n + j]*b[k * n + j]; // C[i][j]
+      c[i * n + j] += a[i * n + k] * b[k * n + j]; // C[i][j]
       }
     }
   }
