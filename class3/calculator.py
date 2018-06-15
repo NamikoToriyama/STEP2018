@@ -56,8 +56,42 @@ def tokenize(line):
 
 
 def evaluate(tokens):
-    answer = 0
+    tokens=evaluate_mal_div(tokens)
+    #print tokens
+    answer=evaluate_plus_minus(tokens)
+    return answer
+
+
+def evaluate_mal_div(tokens):
+    tmp = [1]
     tokens.insert(0, {'type': 'PLUS'}) # Insert a dummy '+' token
+    index = 1
+        
+    while index < len(tokens):
+        if tokens[index]['type'] == 'NUMBER':
+            if tokens[index - 1]['type'] == 'MALTIPLY':
+                tmp = tokens[index-2]['number']*tokens[index]['number']
+                #print tmp # test
+                tokens[index]['number']=tmp  
+                #print tokens # test      
+                tokens.pop(index-1)
+                index-=1
+                tokens.pop(index-1)
+
+            elif tokens[index - 1]['type'] == 'DIVID':
+                tmp = tokens[index-2]['number']/tokens[index]['number']
+                tokens[index-2]['number']=tmp
+                tokens[index]['number']=tmp  
+                tokens.pop(index-1)
+                index-=1
+                tokens.pop(index-1)
+
+        index+=1
+
+    return tokens
+
+def evaluate_plus_minus(tokens):
+    answer = 0
     index = 1
     while index < len(tokens):
         if tokens[index]['type'] == 'NUMBER':
@@ -65,16 +99,14 @@ def evaluate(tokens):
                 answer += tokens[index]['number']
             elif tokens[index - 1]['type'] == 'MINUS':
                 answer -= tokens[index]['number']
-            elif tokens[index - 1]['type'] == 'MALTIPLY':
-                answer *= tokens[index]['number']
-            elif tokens[index - 1]['type'] == 'DIVID':
-                answer /= tokens[index]['number']
             else:
                 print 'Invalid syntax'
-        index += 1
+        index+=1
+
     return answer
 
 
+#test function
 def test(line, expectedAnswer):
     tokens = tokenize(line)
     actualAnswer = evaluate(tokens)
@@ -88,7 +120,9 @@ def test(line, expectedAnswer):
 def runTest():
     print "==== Test started! ===="
     test("1+2", 3)
-    test("1.0+2.1-3", 0.1)
+    test("3*2", 6)
+    test("3*2*5", 30)
+    test("3*2*5*2*2*2/4", 60)
     print "==== Test finished! ====\n"
 
 runTest()
