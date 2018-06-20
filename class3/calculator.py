@@ -33,6 +33,14 @@ def readDivid(line, index):
     token = {'type': 'DIVID'}
     return token, index + 1
 
+def readLeft(line, index):
+    token = {'type': 'LEFT'}
+    return token, index + 1
+
+def readRight(line, index):
+    token = {'type': 'RIGHT'}
+    return token, index + 1
+
 
 def tokenize(line):
     tokens = []
@@ -48,6 +56,10 @@ def tokenize(line):
             (token, index) = readMaltiply(line, index)
         elif line[index] == '/':
             (token, index) = readDivid(line, index)
+        elif line[index] == '(':
+            (token, index) = readLeft(line, index)
+        elif line[index] == ')':
+            (token, index) = readRight(line, index)
         else:
             print 'Invalid character found: ' + line[index]
             exit(1)
@@ -56,11 +68,32 @@ def tokenize(line):
 
 
 def evaluate(tokens):
+    tokens=evaluate_parenthese(tokens)
     tokens=evaluate_mal_div(tokens)
-    #print tokens
     answer=evaluate_plus_minus(tokens)
     return answer
 
+def evaluate_parenthese(tokens):
+    index=1
+    while index < len(tokens):
+        if tokens[index]['type'] == 'RIGHT':
+            tmp=[]
+            tokens.pop(index)
+            index-=1
+            while tokens[index]['type'] != 'LEFT' :
+                tmp.append(tokens[index])
+                tokens.pop(index) #pop number
+                index-=1
+            tokens.pop(index) #pop left parenthese 
+            #print "tmp" ,tmp
+            tmp_token=evaluate_mal_div(tmp)
+            tmp_ans=evaluate_plus_minus(tmp_token)
+            #print "ans",tmp_ans,"index",index
+            tokens.insert(index, {'type': 'NUMBER', 'number': tmp_ans} )
+            #print tokens
+            
+        index+=1
+    return tokens
 
 def evaluate_mal_div(tokens):
     tmp = [1]
@@ -123,6 +156,9 @@ def runTest():
     test("3*2", 6)
     test("3*2*5", 30)
     test("3*2*5*2*2*2/4", 60)
+    test("(1+2)*2", 6)
+    test("((1+2)*5)*2", 30)
+    test("((1+2)*5)*2+(3+4)*2", 44)
     print "==== Test finished! ====\n"
 
 runTest()
